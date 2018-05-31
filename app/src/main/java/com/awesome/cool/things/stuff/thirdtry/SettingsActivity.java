@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.provider.Settings;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -165,6 +166,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public void onBackPressed(){
         startActivity(new Intent(this, MainActivity.class));
     }
+
+
 
     /**
      * This fragment shows general preferences only. It is used when the
