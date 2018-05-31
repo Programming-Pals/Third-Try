@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
+        android:onClick="tweet"
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="left|bottom"
         app:srcCompat="@drawable/ic_menu_slideshow"
