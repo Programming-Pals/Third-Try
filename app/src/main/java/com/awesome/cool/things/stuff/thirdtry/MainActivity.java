@@ -1,6 +1,8 @@
 package com.awesome.cool.things.stuff.thirdtry;
 
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
