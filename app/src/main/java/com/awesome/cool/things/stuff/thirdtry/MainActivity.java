@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +25,14 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.app.Activity;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.text.Html;
+import android.util.Log;
+import android.widget.Toast;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -60,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     // Logout button
     Button btnLogoutTwitter;
     // EditText for update
-    EditText txtUpdate;
+    TextInputLayout txtUpdate;
     // lbl update
     TextView lblUpdate;
     TextView lblUserName;
@@ -70,6 +79,8 @@ public class MainActivity extends AppCompatActivity
 
     // Twitter
     private static Twitter twitter;
+    private static RequestToken requestToken;
+    private AccessToken accessToken;
 
     // Shared Preferences
     private static SharedPreferences mSharedPreferences;
@@ -108,7 +119,7 @@ public class MainActivity extends AppCompatActivity
         btnLoginTwitter = (Button) findViewById(R.id.btnLoginTwitter);
         btnUpdateStatus = (Button) findViewById(R.id.btnUpdateStatus);
         btnLogoutTwitter = (Button) findViewById(R.id.btnLogoutTwitter);
-        txtUpdate = (EditText) findViewById(R.id.txtUpdateStatus);
+        txtUpdate = (TextInputLayout) findViewById(R.id.txtUpdateStatus);
         lblUpdate = (TextView) findViewById(R.id.lblUpdate);
         lblUserName = (TextView) findViewById(R.id.lblUserName);
 
@@ -137,7 +148,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Call update status function
                 // Get the status from EditText
-                String status = txtUpdate.getText().toString();
+                String status = txtUpdate.getEditText().toString();
 
                 // Check for blank text
                 if (status.trim().length() > 0) {
@@ -235,7 +246,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Twitter.initialize(this); //John added this
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,6 +263,152 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    /**
+     * Function to login twitter
+     * */
+    private void loginToTwitter() {
+        // Check if already logged in
+        if (!isTwitterLoggedInAlready()) {
+            ConfigurationBuilder builder = new ConfigurationBuilder();
+            builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
+            builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+            Configuration configuration = builder.build();
+
+            TwitterFactory factory = new TwitterFactory(configuration);
+            twitter = factory.getInstance();
+
+
+            Thread thread = new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    try {
+
+                        requestToken = twitter
+                                .getOAuthRequestToken(TWITTER_CALLBACK_URL);
+                        MainActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+                                .parse(requestToken.getAuthenticationURL())));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+        } else {
+            // user already logged into twitter
+            Toast.makeText(getApplicationContext(),
+                    "Already Logged into twitter", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Function to update status
+     * */
+    class updateTwitterStatus extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Updating to twitter...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        /**
+         * getting Places JSON
+         * */
+        protected String doInBackground(String... args) {
+            Log.d("Tweet Text", "> " + args[0]);
+            String status = args[0];
+            try {
+                ConfigurationBuilder builder = new ConfigurationBuilder();
+                builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
+                builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+
+                // Access Token
+                String access_token = mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, "");
+                // Access Token Secret
+                String access_token_secret = mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, "");
+
+                AccessToken accessToken = new AccessToken(access_token, access_token_secret);
+                Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
+
+                // Update status
+                twitter4j.Status response = twitter.updateStatus(status);
+
+                Log.d("Status", "> " + response.getText());
+            } catch (TwitterException e) {
+                // Error in updating status
+                Log.d("Twitter Update Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog and show
+         * the data in UI Always use runOnUiThread(new Runnable()) to update UI
+         * from background thread, otherwise you will get error
+         * **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),
+                            "Status tweeted successfully", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+        }
+
+    }
+
+    /**
+     * Function to logout from twitter
+     * It will just clear the application shared preferences
+     * */
+    private void logoutFromTwitter() {
+        // Clear the shared preferences
+        Editor e = mSharedPreferences.edit();
+        e.remove(PREF_KEY_OAUTH_TOKEN);
+        e.remove(PREF_KEY_OAUTH_SECRET);
+        e.remove(PREF_KEY_TWITTER_LOGIN);
+        e.commit();
+
+        // After this take the appropriate action
+        // I am showing the hiding/showing buttons again
+        // You might not needed this code
+        btnLogoutTwitter.setVisibility(View.GONE);
+        btnUpdateStatus.setVisibility(View.GONE);
+        txtUpdate.setVisibility(View.GONE);
+        lblUpdate.setVisibility(View.GONE);
+        lblUserName.setText("");
+        lblUserName.setVisibility(View.GONE);
+
+        btnLoginTwitter.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Check user already logged in your application using twitter Login flag is
+     * fetched from Shared Preferences
+     * */
+    private boolean isTwitterLoggedInAlready() {
+        // return twitter login status from Shared Preferences
+        return mSharedPreferences.getBoolean(PREF_KEY_TWITTER_LOGIN, false);
+    }
+
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
