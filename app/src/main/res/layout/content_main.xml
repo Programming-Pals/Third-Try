@@ -10,60 +10,90 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="246dp"
-        android:layout_height="248dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="108dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnLoginTwitter"
+        app:layout_constraintEnd_toStartOf="@+id/lblUserName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/test_display" />
 
     <Button
         android:id="@+id/btnLoginTwitter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="27dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="16dp"
         android:text="Log In"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="291dp" />
+        app:layout_constraintBottom_toTopOf="@+id/txtUpdateStatus"
+        app:layout_constraintEnd_toStartOf="@+id/btnUpdateStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <Button
         android:id="@+id/btnUpdateStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginEnd="9dp"
         android:text="Update/Tweet idk"
-        tools:layout_editor_absoluteX="115dp"
-        tools:layout_editor_absoluteY="291dp" />
+        app:layout_constraintBottom_toBottomOf="@+id/btnLoginTwitter"
+        app:layout_constraintEnd_toStartOf="@+id/btnLogoutTwitter"
+        app:layout_constraintStart_toEndOf="@+id/btnLoginTwitter"
+        app:layout_constraintTop_toTopOf="@+id/btnLogoutTwitter" />
 
     <Button
         android:id="@+id/btnLogoutTwitter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="165dp"
+        android:layout_marginEnd="10dp"
         android:text="Log Out"
-        tools:layout_editor_absoluteX="290dp"
-        tools:layout_editor_absoluteY="291dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnUpdateStatus"
+        app:layout_constraintTop_toBottomOf="@+id/lblUserName" />
 
     <TextView
         android:id="@+id/lblUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="39dp"
+        android:layout_marginTop="22dp"
         android:text="Tweet"
-        tools:layout_editor_absoluteX="274dp"
-        tools:layout_editor_absoluteY="57dp" />
+        app:layout_constraintBottom_toTopOf="@+id/lblUserName"
+        app:layout_constraintEnd_toEndOf="@+id/lblUserName"
+        app:layout_constraintStart_toStartOf="@+id/lblUserName"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/lblUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="108dp"
+        android:layout_marginEnd="68dp"
         android:text="Username"
-        tools:layout_editor_absoluteX="274dp"
-        tools:layout_editor_absoluteY="99dp" />
+        app:layout_constraintBottom_toTopOf="@+id/btnLogoutTwitter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/lblUpdate" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/txtUpdateStatus"
-        android:layout_width="130dp"
-        android:layout_height="91dp"
-        tools:layout_editor_absoluteX="248dp"
-        tools:layout_editor_absoluteY="147dp">
+        android:layout_width="166dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="42dp"
+        android:layout_marginStart="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btnUpdateStatus"
+        app:layout_constraintTop_toBottomOf="@+id/btnLoginTwitter">
 
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="hint"
             android:text="Insert tweet here" />
     </android.support.design.widget.TextInputLayout>

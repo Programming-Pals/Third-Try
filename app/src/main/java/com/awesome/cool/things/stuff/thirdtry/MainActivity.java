@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity
 
     // Preference Constants
     static String PREFERENCE_NAME = "twitter_oauth";
-    static final String PREF_KEY_OAUTH_TOKEN = "2752730673-vSBzGAFgFe4JVY2Dj365JVD4ePNOljDLE6zCYnF";
-    static final String PREF_KEY_OAUTH_SECRET = "R48sf7noSUPxI7tfXtLSqVLVO1N7PKL8EjEtEjQ7SPzOB";
+    static final String PREF_KEY_OAUTH_TOKEN = "2752730673lYMgE86ftckkncvptTgI0eViiGPgx9eOhRPKSNj";
+    static final String PREF_KEY_OAUTH_SECRET = "j9SAnNsczZQsc1iNsZBOcxyAILUAYMuElHDHq8LkQIHZc";
     static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
 
     static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         ConnectivityManager cm =
                 (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -274,6 +275,8 @@ public class MainActivity extends AppCompatActivity
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
             builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+            builder.setOAuthAccessToken(PREF_KEY_OAUTH_TOKEN);
+            builder.setOAuthAccessTokenSecret(PREF_KEY_OAUTH_SECRET);
             Configuration configuration = builder.build();
 
             TwitterFactory factory = new TwitterFactory(configuration);
@@ -286,7 +289,7 @@ public class MainActivity extends AppCompatActivity
                     try {
 
                         requestToken = twitter
-                                .getOAuthRequestToken(TWITTER_CALLBACK_URL);
+                                .getOAuthRequestToken();
                         MainActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
                                 .parse(requestToken.getAuthenticationURL())));
 
