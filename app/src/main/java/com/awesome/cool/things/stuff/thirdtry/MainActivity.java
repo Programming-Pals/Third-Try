@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     // lbl update
     TextView lblUpdate;
     TextView lblUserName;
+    EditText numPin;
 
     // Progress dialog
     ProgressDialog pDialog;
@@ -123,6 +125,7 @@ public class MainActivity extends AppCompatActivity
         txtUpdate = (TextInputLayout) findViewById(R.id.txtUpdateStatus);
         lblUpdate = (TextView) findViewById(R.id.lblUpdate);
         lblUserName = (TextView) findViewById(R.id.lblUserName);
+        numPin = (EditText) findViewById(R.id.numPin);
 
         // Shared Preferences
         mSharedPreferences = getApplicationContext().getSharedPreferences(
@@ -251,7 +254,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Your mother is a nice lady", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Hey, Vsauce, Michael here", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -275,8 +278,8 @@ public class MainActivity extends AppCompatActivity
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
             builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
-            builder.setOAuthAccessToken(PREF_KEY_OAUTH_TOKEN);
-            builder.setOAuthAccessTokenSecret(PREF_KEY_OAUTH_SECRET);
+            builder.setOAuthAccessToken(null);
+            builder.setOAuthAccessTokenSecret(null);
             Configuration configuration = builder.build();
 
             TwitterFactory factory = new TwitterFactory(configuration);
@@ -292,6 +295,9 @@ public class MainActivity extends AppCompatActivity
                                 .getOAuthRequestToken();
                         MainActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
                                 .parse(requestToken.getAuthenticationURL())));
+
+
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -382,23 +388,19 @@ public class MainActivity extends AppCompatActivity
      * */
     private void logoutFromTwitter() {
         // Clear the shared preferences
-        Editor e = mSharedPreferences.edit();
-        e.remove(PREF_KEY_OAUTH_TOKEN);
-        e.remove(PREF_KEY_OAUTH_SECRET);
-        e.remove(PREF_KEY_TWITTER_LOGIN);
-        e.commit();
-
-        // After this take the appropriate action
-        // I am showing the hiding/showing buttons again
-        // You might not needed this code
-        btnLogoutTwitter.setVisibility(View.GONE);
-        btnUpdateStatus.setVisibility(View.GONE);
-        txtUpdate.setVisibility(View.GONE);
-        lblUpdate.setVisibility(View.GONE);
-        lblUserName.setText("");
-        lblUserName.setVisibility(View.GONE);
-
-        btnLoginTwitter.setVisibility(View.VISIBLE);
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String pin = numPin.getText().toString();
+                try {
+                    accessToken = twitter.getOAuthAccessToken(requestToken, pin);
+                } catch (TwitterException e) {
+                    e.printStackTrace();
+                }
+                twitter.setOAuthAccessToken(accessToken);
+            }
+        });
+        t.start();
     }
 
     /**

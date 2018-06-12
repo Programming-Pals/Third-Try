@@ -25,11 +25,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="27dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginStart="16dp"
         android:text="Log In"
         app:layout_constraintBottom_toTopOf="@+id/txtUpdateStatus"
-        app:layout_constraintEnd_toStartOf="@+id/btnUpdateStatus"
+        app:layout_constraintEnd_toStartOf="@+id/numPin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
@@ -55,7 +55,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnUpdateStatus"
-        app:layout_constraintTop_toBottomOf="@+id/lblUserName" />
+        app:layout_constraintTop_toBottomOf="@+id/numPin" />
 
     <TextView
         android:id="@+id/lblUpdate"
@@ -97,5 +97,19 @@
             android:hint="hint"
             android:text="Insert tweet here" />
     </android.support.design.widget.TextInputLayout>
+
+    <EditText
+        android:id="@+id/numPin"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="34dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="213dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogoutTwitter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnLoginTwitter"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
