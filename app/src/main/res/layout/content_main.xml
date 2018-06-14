@@ -51,7 +51,11 @@
         android:layout_height="0dp"
         android:layout_marginBottom="165dp"
         android:layout_marginEnd="10dp"
+<<<<<<< HEAD
         android:text="Send auth code"
+=======
+        android:text="Send Log in Code"
+>>>>>>> c918c36c8ea8dc148bb007a96cb0a1f1e21a5dd6
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnUpdateStatus"
